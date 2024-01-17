@@ -1,67 +1,51 @@
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
+
+import uuid from "react-native-uuid";
+import AllTodos from "./components/AllTodos";
+import CreateTodo from "./components/CreateTodo";
 
 export default function App() {
   const [text, setText] = useState("");
+  const [todos, setTodos] = useState([]);
 
-  function addTodo() {}
+  function addTodo() {
+    const id = uuid.v4();
+    const todo = { id, text };
+    setTodos([...todos, todo]);
+    setText("");
+  }
+
+  function deleteTodo(id) {
+    setTodos(todos.filter((todo) => todo.id != id));
+  }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Todo App</Text>
-      <TextInput
-        editable
-        multiline
-        numberOfLines={5}
-        maxLength={100}
-        defaultValue={text}
-        onChange={(text) => setText(text)}
-        placeholder="Enter Todo"
-        placeholderTextColor={"white"}
-        style={styles.todoInput}
-      />
-      <Pressable style={styles.btn} onPress={addTodo}>
-        <Text style={styles.btnText} >Add</Text>
-      </Pressable>
-      <StatusBar style="auto" />
-    </View>
+    <ScrollView  contentContainerStyle={styles.container} scrollEnabled>
+          <Text style={styles.heading}>Todo App</Text>
+
+          {/* Create a Todo  */}
+          <CreateTodo text={text} setText={setText} addTodo={addTodo} />
+
+          {/* Display All todos  */}
+          <AllTodos todos={todos} deleteTodo={deleteTodo} />
+
+          <StatusBar style="auto" />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#4d3903",
+    backgroundColor: "#163020",
     alignItems: "center",
-    justifyContent: "center",
+    paddingTop: "20%",
   },
   heading: {
     fontSize: 32,
-    color: "white",
+    color: "#EEF0E5",
     fontWeight: "bold",
   },
-  todoInput: {
-    borderWidth: 1,
-    borderColor: "white",
-    paddingHorizontal: 11,
-    paddingVertical: 3,
-    height: 62,
-    color: "white",
-    width: 300,
-    fontSize: 15,
-    margin: 63,
-  },
-  btn: {
-    width: 140,
-    borderWidth: 1,
-    borderColor: 'white',
-    padding: 9,
-    backgroundColor: '#a8b545'
-  },
-  btnText: {
-    color: 'white',
-    fontSize: 18,
-    textAlign: 'center'
-  }
 });
